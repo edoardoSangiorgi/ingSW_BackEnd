@@ -1,41 +1,55 @@
 package it.unife.ingsw202324.Chat.services;
 
 import it.unife.ingsw202324.Chat.DTOs.UserDTO;
-import it.unife.ingsw202324.Chat.entities.User;
+import it.unife.ingsw202324.Chat.models.User;
+import it.unife.ingsw202324.Chat.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
+    @Autowired
+    UserRepository userRepository;
+
+    //### CONVERSIONE #####################################################################################
+
     public UserDTO convertToDTO(User user){
 
-        UserDTO newUserDTO = new UserDTO();
-
-        newUserDTO.setUsername(user.getUsername());
-        newUserDTO.setName(user.getName());
-        newUserDTO.setSurname(user.getSurname());
-        newUserDTO.setAdmin(user.isAdmin());
-        newUserDTO.setTel(user.getTel());
-
-        newUserDTO.setBirthDate(user.getBirthDate());
-        newUserDTO.setGender(user.getGender());
-
-        return newUserDTO;
+        return new UserDTO(
+                user.getUsername(),
+                user.getName(),
+                user.getSurname(),
+                user.isAdmin(), 
+                user.getBirthDate()
+        );
+        
     }
 
     public User convertFromDTO(UserDTO userDTO){
 
-        User convertedUser = new User();
+        return new User(
+                userDTO.getUsername(),
+                userDTO.getName(),
+                userDTO.getSurname(),
+                userDTO.getBirthDate(),
+                userDTO.isAdmin(),
+                null
+        );
 
-        convertedUser.setUsername(userDTO.getUsername());
-        convertedUser.setName(userDTO.getName());
-        convertedUser.setSurname(userDTO.getSurname());
-        convertedUser.setAdmin(userDTO.isAdmin());
-        convertedUser.setTel(userDTO.getTel());
-
-        convertedUser.setBirthDate(userDTO.getBirthDate());
-        convertedUser.setGender(userDTO.getGender());
-
-        return convertedUser;
     }
+
+
+
+    //### METODI ##########################################################################################
+
+    public void create(User userToSave){
+        userRepository.save(userToSave);
+    }
+
+    public void delete(User userToDelete){
+
+    }
+
+
 }

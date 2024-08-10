@@ -4,9 +4,9 @@ package it.unife.ingsw202324.Chat.services;
 import it.unife.ingsw202324.Chat.DTOs.ChatDTO;
 import it.unife.ingsw202324.Chat.DTOs.MessageDTO;
 import it.unife.ingsw202324.Chat.DTOs.UserDTO;
-import it.unife.ingsw202324.Chat.entities.Chat;
-import it.unife.ingsw202324.Chat.entities.Message;
-import it.unife.ingsw202324.Chat.entities.User;
+import it.unife.ingsw202324.Chat.models.Chat;
+import it.unife.ingsw202324.Chat.models.Message;
+import it.unife.ingsw202324.Chat.models.User;
 import it.unife.ingsw202324.Chat.repositories.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,121 +28,92 @@ public class ChatService {
 
 
 
-    // -- C O N V E R T I T O R I --------------------------------------------------------------------------
-    public Chat convertFromDTO(ChatDTO request){
-        /*
-            INPUT:
-                    request:    l'orggetto che contiene tutte le informazioni riguardo la chat passato dal client
-                    CreateChatRequest
+    //### CONVERSIONE ###########################################################################################À
+    public Chat convertFromDTO(ChatDTO chatDTO){
 
-            OUTPUT:
-                    chat:       l'oggetto da salvare sul DB
-                    Chat
-         */
-
-        Chat chat = new Chat();
-
-        long id = 0; // TODO: algoritmo per assegnamento id
-        chat.setId(id);
-        chat.setName(request.getChatName());
-        chat.setState("active");
-        if(request.getMembers().size() == 1) chat.setType("single");
-        else chat.setType("group");
-
-        List<UserDTO> membersList = request.getMembers();
-        List<User> convertedMembersList = new ArrayList<>();
-        for(UserDTO member: membersList){
-            convertedMembersList.add(userService.convertFromDTO(member));
-        }
-        chat.setMembers(convertedMembersList);
-
-
-        return chat;
+        return new Chat(
+                null,
+                chatDTO.getChatName(),
+                chatDTO.getType(),
+                false,
+                chatDTO.getCreationDate(),
+                null,
+                null,
+                null
+        );
     }
 
     public ChatDTO convertToDTO(Chat chat){
-        /*
-            INPUT:
-                    chat:   oggetto che mappa la chat sul DB
-                    Chat
 
-            OUTPUT:
-                    dto:    oggetto che mappa la chat ad alto livello
-                    ChatDTO
-         */
-        ChatDTO newDto = new ChatDTO();
+        if(chat == null) return null;
 
-        newDto.setId(chat.getId());
-        newDto.setChatName(chat.getName());
-        newDto.setType(chat.getType());
-        newDto.setState(chat.getState());
-
-        /* Conversione della lista User a lista UserDTO*/
-        List<User> membersList = chat.getMembers();
-        List<UserDTO> convertedMembersList = new ArrayList<>();
-        for(User member: membersList){
-            convertedMembersList.add(userService.convertToDTO(member));
+        //-- conversione messaggi
+        List<Message> chatMessages = chat.getMessages();
+        List<MessageDTO> chatMessagesDTO = new ArrayList<>();
+        for(Message message: chatMessages){
+            chatMessagesDTO.add(messageService.convertToDTO(message));
         }
-        newDto.setMembers(convertedMembersList);
 
-        /* Conversione della lista Message a lista MessageDTO*/
-        List<Message> messageList = chat.getMessages();
-        List<MessageDTO> messageDTOList = new ArrayList<>();
-        for(Message message: messageList){
-            messageDTOList.add(messageService.convertToDTO(message));
+        //-- conversione utenti membri
+        List<User> chatMembers = chat.getMembers();
+        List<UserDTO> chatMembersDTO = new ArrayList<>();
+        for(User member: chatMembers){
+            chatMembersDTO.add(userService.convertToDTO(member));
         }
-        newDto.setMessages(messageDTOList);
 
-        return newDto;
+        //-- TODO: API per recuperare l'evento
+
+        //-- conversione
+        return new ChatDTO(
+                chat.getName(),
+                chat.getType(),
+                chat.getCreationDate(),
+                chatMembersDTO,
+                chatMessagesDTO,
+                null
+        );
+
+
     }
 
 
 
-    // --- LETTURA SINGOLA CHAT -----------------------------------------------------------------------------
-    public ChatDTO getChat(ChatDTO chat){
-        /*
-            INPUT:
-                    chatId:     l'id della chat specifica da cercare
-                    Long
 
-            OUTPUT:
+    //### METODI ###################################################################################À
+
+    // --- LETTURA SINGOLA CHAT -----------------------------------------------------------------------------
+    public Chat getChatByName(String chatName){
+        /*
+            recupera la singola chat in base al nome
+
+
+
+            Input:
+                    chat:       la chat da trovare
+
+            Output:
                     ChatDTO:    L'oggetto chatDTO da restituire al client
                                 che contiene anche tutti i messaggi da stampare
          */
 
         // -- cerca la chat dal DB
+        Optional<Chat> requestedChat = chatRepository.findByName(chatName);
 
-        Optional<Chat> requestedChat = chatRepository.findById(chat.getId());
-
-        // -- se la chat è stata trovata l'oggetto chat viene convertito in oggetto DTO
-        if(requestedChat.isPresent()){
-            Chat foundChat = requestedChat.get();
-            return convertToDTO(foundChat);
-
-
-        } else {
-            // -- altrimenti viene restituito null
-            // TODO: sfrutta questo valore per messaggi di errore lato client
-            return null;
-        }
-
+        //-- ritorna la chat trovata altrimenti ritorna null
+        return requestedChat.orElse(null);
 
     }
 
 
     // -- LETTURA LISTA CHAT --------------------------------------------------------------------------------
-    public List<ChatDTO> getAll(){
-        List<Chat> chatList = chatRepository.findAll();
-        List<ChatDTO> dtoList = new ArrayList<>();
-        for(Chat chat: chatList){
-            dtoList.add(convertToDTO(chat));
-        }
-        return dtoList;
+    public List<Chat> getAll(){
+        return chatRepository.findAll();
     }
 
 
+
     // -- CREAZIONE NUOVA CHAT ------------------------------------------------------------------------------
-    public void createChat(ChatDTO request){
+    public void createChat(Chat chatToSave){
         /*
             INPUT:
                     request:    l'oggetto che coniene le info della chat dal client
@@ -152,22 +123,37 @@ public class ChatService {
                     - converte request in un'oggetto chat
                     - salva l'oggetto chat sul DB
          */
-        Chat newChat = convertFromDTO(request);
-        // TODO: salva utenti sul DB
-        chatRepository.save(newChat);
+        ;
+
+        chatRepository.save(chatToSave);
     }
 
 
-    // -- UPDATE CHAT ---------------------------------------------------------------------------------------
-    public ChatDTO updateChat(Chat chatToUpdate){
-        /*
-            CASI D'USO:
-                - inserimento nuovi utenti
-                - modifica attributi chat
-         */
-        chatRepository.save(chatToUpdate);
-        return this.convertToDTO(chatToUpdate);
 
+    // -- UPDATE CHAT ---------------------------------------------------------------------------------------
+    public Chat updateChat(Chat chatToUpdate){
+        return chatRepository.save(chatToUpdate);
+    }
+
+
+    //--- AGGIUNGI UTENTE ----------------------------------------------------------------------------------
+    public void addUser(User user, Chat chat){
+
+        chat.addMember(user);
+        userService.create(user);
+    }
+
+
+    //--- RIMUOVI UTENTE -----------------------------------------------------------------------------------
+    public void removeUser(User user, Chat chat){
+        chat.removeMember(user);
+    }
+
+
+    //--- AGGIUNGI MESSAGGIO -------------------------------------------------------------------------------
+    public void addMessage(Message messageToAdd, Chat chat){
+        chat.addMessage(messageToAdd);
+        messageService.create(messageToAdd);
     }
 
 

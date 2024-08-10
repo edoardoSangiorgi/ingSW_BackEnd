@@ -1,12 +1,10 @@
 spring:
   application:
-    name: MicroservizioBase
-
-  # Il tastino qui permette di fare la connessione al Data Base
+    name: Chat
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: Strato_29
-    url: jdbc:mysql://localhost:3306/chatdb
+    url: jdbc:mysql://localhost:3306/jpachatdb
     username: edoardo
   jpa:
     hibernate:

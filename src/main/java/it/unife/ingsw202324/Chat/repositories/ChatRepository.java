@@ -1,6 +1,6 @@
 package it.unife.ingsw202324.Chat.repositories;
 
-import it.unife.ingsw202324.Chat.entities.Chat;
+import it.unife.ingsw202324.Chat.models.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     Optional<Chat> findByName(String chatName);
+
 
 }

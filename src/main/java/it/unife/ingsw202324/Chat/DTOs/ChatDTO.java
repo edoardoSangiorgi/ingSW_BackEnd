@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -11,13 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 public class ChatDTO {
 
-    private Long id;
     private String chatName;
     private String type;
-    private String state;
+    private Date creationDate;
 
     private List<UserDTO> members;
     private List<MessageDTO> messages;
-    private List<EventDTO> event;
+    private EventDTO event; // sono contenute le info dell'evento
 
 }
