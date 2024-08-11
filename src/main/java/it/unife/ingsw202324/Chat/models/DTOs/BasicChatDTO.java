@@ -1,4 +1,4 @@
-package it.unife.ingsw202324.Chat.DTOs;
+package it.unife.ingsw202324.Chat.models.DTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

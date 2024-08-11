@@ -1,4 +1,4 @@
-package it.unife.ingsw202324.Chat.DTOs;
+package it.unife.ingsw202324.Chat.models.DTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class ChatDTO {
     private String type;
     private Date creationDate;
 
-    private List<UserDTO> members;
+    private List<MemberDTO> members;
     private List<MessageDTO> messages;
     private EventDTO event; // sono contenute le info dell'evento
 

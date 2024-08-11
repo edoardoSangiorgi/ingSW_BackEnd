@@ -142,7 +142,7 @@ Usage: mysql [OPTIONS] [database]
   --tee=name          Append everything into outfile. See interactive help (\h)
                       also. Does not work in batch mode. Disable with
                       --disable-tee. This option is disabled by default.
-  -u, --user=name     User for login if not current user.
+  -u, --member=name     User for login if not current member.
   -U, --safe-updates  Only allow UPDATE and DELETE that uses keys.
   -U, --i-am-a-dummy  Synonym for option --safe-updates, -U.
   -v, --verbose       Write more. (-v -v -v gives the table output format).
@@ -270,7 +270,7 @@ ssl-session-data                                       (No default value)
 ssl-session-data-continue-on-failed-reuse              FALSE
 tls-sni-servername                                     (No default value)
 table                                                  FALSE
-user                                                   (No default value)
+member                                                   (No default value)
 safe-updates                                           FALSE
 i-am-a-dummy                                           FALSE
 wait                                                   FALSE

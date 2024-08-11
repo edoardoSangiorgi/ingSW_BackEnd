@@ -1,9 +1,9 @@
 package it.unife.ingsw202324.Chat.services;
 
-import it.unife.ingsw202324.Chat.DTOs.MessageDTO;
-import it.unife.ingsw202324.Chat.models.Chat;
-import it.unife.ingsw202324.Chat.models.Message;
-import it.unife.ingsw202324.Chat.models.User;
+import it.unife.ingsw202324.Chat.models.DTOs.MessageDTO;
+import it.unife.ingsw202324.Chat.models.entities.Chat;
+import it.unife.ingsw202324.Chat.models.entities.Message;
+import it.unife.ingsw202324.Chat.models.entities.Member;
 import it.unife.ingsw202324.Chat.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,20 +18,20 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     @Autowired
-    UserService userService;
+    MemberService memberService;
 
 
     //### CONVERSIONE ###############################################################################À
-    public Message convertFromDTO(MessageDTO messageDTO){
+    public Message convertFromDTO(MessageDTO messageDTO, Chat chat){
 
-        User sender = new User();
+        Member sender = new Member();
         sender.setUsername(messageDTO.getSenderUsername());
 
         return new Message(
                 null,
                 messageDTO.getContent(),
                 messageDTO.getTimestamp(),
-                null,
+                chat,
                 sender
         );
     }

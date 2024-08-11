@@ -1,6 +1,6 @@
 package it.unife.ingsw202324.Chat.repositories;
 
-import it.unife.ingsw202324.Chat.models.Chat;
+import it.unife.ingsw202324.Chat.models.entities.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
