@@ -1,10 +1,9 @@
 package it.unife.ingsw202324.Chat.api;
 
 import it.unife.ingsw202324.Chat.models.DTOs.*;
-import it.unife.ingsw202324.Chat.models.entities.Chat;
-import it.unife.ingsw202324.Chat.models.entities.Member;
-import it.unife.ingsw202324.Chat.models.entities.Message;
+import it.unife.ingsw202324.Chat.models.entities.*;
 import it.unife.ingsw202324.Chat.services.ChatService;
+import it.unife.ingsw202324.Chat.services.EventService;
 import it.unife.ingsw202324.Chat.services.MessageService;
 import it.unife.ingsw202324.Chat.services.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +15,25 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class MainController {
+    
     @Autowired
     private ChatService chatService;
     @Autowired
     private MessageService messageService;
     @Autowired
-    MemberService memberService;
+    private MemberService memberService;
+    @Autowired
+    private EventService eventService;
 
 
     //### MOCKOON API (REST) ############À#######################################################################
 
     // -- RICERCA UTENTI DISPONIBILI ---
     @GetMapping("/available-users")
-    public List<MemberDTO> getUsers(@RequestBody String username){
+    public List<User> getUsers(@RequestBody String username){
         // TODO: mockoon api --> TemplateRestConsumer
 
-        List<MemberDTO> memberDTOList = new ArrayList<>();
+        List<User> memberDTOList = new ArrayList<>();
 
         return memberDTOList;
     }
@@ -39,7 +41,7 @@ public class MainController {
 
     // -- RICERCA EVENTO A CUI COLLEGARE LA CHAT ---
     @GetMapping("/available-events")
-    public List<EventDTO> getEvents(@RequestBody EventDTO eventDTO){
+    public List<Event> getEvents(@RequestBody String eventName){
         // TODO: mockoon api --> TemplateRestConsumer
         return null;
     }
@@ -63,7 +65,7 @@ public class MainController {
                     List<ChatDTO>:  tutte le chat
          */
         Chat chatToSave = chatService.convertFromDTO(request);
-        chatService.createChat(chatToSave);
+        chatService.create(chatToSave);
         return getChatList();
     }
 
@@ -80,26 +82,11 @@ public class MainController {
                                             nella lista principale
          */
 
-        //-- risultato query
+        //-- recupero le chat dal db
         List<Chat> allChats = chatService.getAll();
 
         //-- conversione
-        List<BasicChatDTO> allChatDTO = new ArrayList<>();
-        for(Chat chat: allChats){
-            Message lastMessage = messageService.getLastMessageByChatName(chat.getId());
-            String content = lastMessage.getContent();
-
-            //-- creazione oggetto da inviare nella view
-            BasicChatDTO basicChatDTO = new BasicChatDTO(
-                    chat.getName(),
-                    chat.getType(),
-                    content
-            );
-
-            allChatDTO.add(basicChatDTO);
-        }
-
-        return allChatDTO;
+        return chatService.convertListToBasicDTO(allChats);
     }
 
 
@@ -111,8 +98,25 @@ public class MainController {
             se l'oggetto non esiste -> ritorna null
          */
         try {
+            //-- cerca la chat
             Chat foundChat = chatService.getChatByName(name);
-            return chatService.convertToDTO(foundChat);
+            //-- cerca i membri
+            List<Member> foundMembers = memberService.getMembersByChat(foundChat);
+            List<MemberDTO> members = memberService.convertListToDTO(foundMembers);
+            //-- cerca i messaggi
+            List<Message> foundMessages = messageService.getMessagesByChat(foundChat);
+            List<MessageDTO> messages = messageService.convertListToDTO(foundMessages);
+            //-- cerca l'evento
+            List<Event> foundEvent = getEvents(foundChat.getName());
+            EventDTO event = eventService.convertToDTO(foundEvent.get(0));
+
+            ChatDTO convertedChat = chatService.convertToDTO(foundChat);
+            convertedChat.setMembers(members);
+            convertedChat.setMessages(messages);
+            convertedChat.setEvent(event);
+
+            return convertedChat;
+
         } catch (RuntimeException e){
             return null;
         }
@@ -132,12 +136,13 @@ public class MainController {
 
 
         //-- Aggiungi l'utente alla chat
-        chatService.addUser(member, chat);
+        memberService.add(member);
 
 
         //-- restiiusci la chat aggiornata
         return chatService.convertToDTO(chatService.getChatByName(chat.getName()));
     }
+
 
     //--- RIMUOVI UTENTE DALLA CHAT ---
     @GetMapping("/chats/{name}/removeUser")
@@ -147,7 +152,7 @@ public class MainController {
         Chat chat = chatService.convertFromDTO(chatDTO);
         Member member = memberService.convertFromDTO(memberToRemove, chat);
 
-        chatService.removeMember(member, chat);
+        memberService.remove(member);
 
         return chatService.convertToDTO(chatService.getChatByName(chat.getName()));
     }
@@ -163,11 +168,10 @@ public class MainController {
         /*
             manda un nuovo messaggio
         */
-
         Chat chat = chatService.convertFromDTO(chatDTO);
-        Message messageToAdd = messageService.convertFromDTO(request, chat);
+        Member sender = memberService.getMemberByName(request.getSenderUsername());
+        Message messageToAdd = messageService.convertFromDTO(request, chat, sender);
 
-        chatService.addMessage(messageToAdd, chat);
-
+        messageService.create(messageToAdd);
     }
 }

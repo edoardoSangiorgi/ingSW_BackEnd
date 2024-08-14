@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +15,7 @@ public class MemberDTO {
     private String username;
     private String name;
     private String surname;
-    private Date birthDate;
+    private LocalDate birthDate;
     private Boolean deleted;
     private Boolean admin;
 

@@ -2,11 +2,13 @@ package it.unife.ingsw202324.Chat.repositories;
 
 import it.unife.ingsw202324.Chat.models.entities.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 
 // --- CLASSE CHE DEFINISCE IL REPOSITORY DI CHAT ---
+@Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     Optional<Chat> findByName(String chatName);

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class EventDTO {
 
 
-    private String name;
     private String description;
     private String type;
     private Integer minAge;

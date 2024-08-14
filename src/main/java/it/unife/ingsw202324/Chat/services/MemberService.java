@@ -7,6 +7,9 @@ import it.unife.ingsw202324.Chat.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class MemberService {
 
@@ -26,6 +29,18 @@ public class MemberService {
                 member.getAdmin()
         );
         
+    }
+
+    public List<MemberDTO> convertListToDTO(List<Member> listToConvert){
+        /*
+            converte una lista di Member in MemberDTO
+         */
+        List<MemberDTO> convertedList = new ArrayList<>();
+        for(Member member: listToConvert){
+            convertedList.add(convertToDTO(member));
+        }
+
+        return convertedList;
     }
 
     public Member convertFromDTO(MemberDTO memberDTO, Chat chat){
@@ -50,9 +65,26 @@ public class MemberService {
         userRepository.save(memberToSave);
     }
 
-    public void delete(Member memberToDelete){
+    public List<Member> getMembersByChat(Chat chat){
+        return userRepository.findAllByChatAndDeletedIsFalse(chat);
+    }
+
+    //--- AGGIUNGI UTENTE ----------------------------------------------------------------------------------
+    public void add(Member memberToAdd){
+//        Chat chat = memberToAdd.getChat();
+//        chat.addMember(memberToAdd);
+        create(memberToAdd);
+    }
+
+
+    //--- RIMUOVI UTENTE -----------------------------------------------------------------------------------
+    public void remove(Member memberToDelete){
         memberToDelete.setDeleted(true);
         create(memberToDelete);
+    }
+
+    public Member getMemberByName(String username){
+        return userRepository.findMemberByUsername(username);
     }
 
 

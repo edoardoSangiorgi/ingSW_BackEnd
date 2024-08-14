@@ -11,6 +11,6 @@ public class BasicChatDTO {
 
     private String name;
     private String type;
-    private String LastMessage;
+    private String lastMessage;
 
 }

@@ -2,8 +2,8 @@ package it.unife.ingsw202324.Chat.services;
 
 import it.unife.ingsw202324.Chat.models.DTOs.MessageDTO;
 import it.unife.ingsw202324.Chat.models.entities.Chat;
-import it.unife.ingsw202324.Chat.models.entities.Message;
 import it.unife.ingsw202324.Chat.models.entities.Member;
+import it.unife.ingsw202324.Chat.models.entities.Message;
 import it.unife.ingsw202324.Chat.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +22,8 @@ public class MessageService {
 
 
     //### CONVERSIONE ###############################################################################À
-    public Message convertFromDTO(MessageDTO messageDTO, Chat chat){
+    public Message convertFromDTO(MessageDTO messageDTO, Chat chat, Member sender){
 
-        Member sender = new Member();
-        sender.setUsername(messageDTO.getSenderUsername());
 
         return new Message(
                 null,
@@ -48,17 +46,24 @@ public class MessageService {
         return newDto;
     }
 
+    public List<MessageDTO> convertListToDTO(List<Message> listToConvert){
+        List<MessageDTO> convertedList = new ArrayList<>();
+        for(Message message: listToConvert){
+            convertedList.add(convertToDTO(message));
+        }
+        return convertedList;
+    }
+
 
 
     // -- CREA UN NUOVO MESSAGGIO -------------------------------------------------------------------------
     public void create(Message message){
-
         messageRepository.save(message);
     }
 
 
     // -- CERCA MESSAGGI DI UNA CHAT -----------------------------------------------------------------------
-    public List<MessageDTO> getMessagesByChat(Chat chat){
+    public List<Message> getMessagesByChat(Chat chat){
         /*
             Input:
                     chatDTO:    oggetto DTO con le info sulla chat
@@ -69,17 +74,25 @@ public class MessageService {
                     List<MessageDTO>
 
          */
-        List<Message> messageList = messageRepository.findByChat(chat);
-        List<MessageDTO> dtoList = new ArrayList<>();
-        for(Message message: messageList){
-            dtoList.add(convertToDTO(message));
-        }
-        return dtoList;
+        return messageRepository.findByChat(chat);
     }
 
 
-    public Message getLastMessageByChatName(Long chatId){
-        return messageRepository.findFirstByChatIdOrderByTimestampDesc(chatId);
+    //--- CERCA L'ULTIMO MEASSAGGIO -------------------------------------------------------------------
+    public String getLastMessageByChat(Chat chat){
+        /*
+            cerca l'ultimo messaggio di una chat
+            formatta l'ultimo messaggio in una stringa
+         */
+        Message lastMessage =  messageRepository.findLastMessageByChat(chat);
+        String content = "";
+        if(lastMessage != null){
+            String text = lastMessage.getContent();
+            String username = lastMessage.getSender().getUsername();
+            content = username + ": " + text;
+        }
+
+        return content;
     }
 
 
