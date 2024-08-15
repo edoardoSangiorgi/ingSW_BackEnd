@@ -29,6 +29,7 @@ public class MainController {
     //### MOCKOON API (REST) ############À#######################################################################
 
     // -- RICERCA UTENTI DISPONIBILI ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/available-users")
     public List<User> getUsers(@RequestBody String username){
         // TODO: mockoon api --> TemplateRestConsumer
@@ -40,6 +41,7 @@ public class MainController {
 
 
     // -- RICERCA EVENTO A CUI COLLEGARE LA CHAT ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/available-events")
     public List<Event> getEvents(@RequestBody String eventName){
         // TODO: mockoon api --> TemplateRestConsumer
@@ -52,6 +54,7 @@ public class MainController {
     //### CHAT API #############################################################################################
 
     //--- CREAZIONE NUOVA CHAT ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @PostMapping("/chats/create")
     public List<BasicChatDTO> createChat(@RequestBody ChatDTO request) {
         /*
@@ -71,6 +74,7 @@ public class MainController {
 
 
     //--- LETTURA LISTA CHAT ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/chats")
     public List<BasicChatDTO> getChatList(){
 
@@ -91,6 +95,7 @@ public class MainController {
 
 
     //--- LETTURA SINGOLA CHAT ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/chats/{name}")
     public ChatDTO getChat(@PathVariable String name) {
         /*
@@ -107,13 +112,13 @@ public class MainController {
             List<Message> foundMessages = messageService.getMessagesByChat(foundChat);
             List<MessageDTO> messages = messageService.convertListToDTO(foundMessages);
             //-- cerca l'evento
-            List<Event> foundEvent = getEvents(foundChat.getName());
-            EventDTO event = eventService.convertToDTO(foundEvent.get(0));
+//            List<Event> foundEvent = getEvents(foundChat.getName());
+//            EventDTO event = eventService.convertToDTO(foundEvent.get(0));
 
             ChatDTO convertedChat = chatService.convertToDTO(foundChat);
             convertedChat.setMembers(members);
             convertedChat.setMessages(messages);
-            convertedChat.setEvent(event);
+            convertedChat.setEvent(null);
 
             return convertedChat;
 
@@ -127,6 +132,7 @@ public class MainController {
 
 
     //--- AGGIUNGI UN NUOVO UTENTE ALLA CHAT ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/chats/{name}/add-member")
     public ChatDTO addUser(@RequestBody MemberDTO memberToAdd, @RequestBody ChatDTO chatDTO){
 
@@ -145,6 +151,7 @@ public class MainController {
 
 
     //--- RIMUOVI UTENTE DALLA CHAT ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/chats/{name}/removeUser")
     public ChatDTO removeUser(@RequestBody MemberDTO memberToRemove, @RequestBody ChatDTO chatDTO){
 
@@ -163,6 +170,7 @@ public class MainController {
     //### MESSAGE API ###########################################################################################
 
     //--- INVIO MESSAGGIO ---------------------------------------------------------------------------
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @PostMapping("/chats/{chatName}/message")
     public void createMessage(@RequestBody MessageDTO request, @RequestBody ChatDTO chatDTO) {
         /*
