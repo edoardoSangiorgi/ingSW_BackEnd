@@ -1,15 +1,14 @@
 package it.unife.ingsw202324.Chat.api;
 
-import it.unife.ingsw202324.Chat.models.DTOs.*;
+import it.unife.ingsw202324.Chat.models.DTOs.BasicChatDTO;
+import it.unife.ingsw202324.Chat.models.DTOs.ChatDTO;
+import it.unife.ingsw202324.Chat.models.DTOs.MemberDTO;
+import it.unife.ingsw202324.Chat.models.DTOs.MessageDTO;
 import it.unife.ingsw202324.Chat.models.entities.*;
-import it.unife.ingsw202324.Chat.services.ChatService;
-import it.unife.ingsw202324.Chat.services.EventService;
-import it.unife.ingsw202324.Chat.services.MessageService;
-import it.unife.ingsw202324.Chat.services.MemberService;
+import it.unife.ingsw202324.Chat.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,6 +23,8 @@ public class MainController {
     private MemberService memberService;
     @Autowired
     private EventService eventService;
+    @Autowired
+    private TemplateRestConsumer templateRestConsumer;
 
 
     //### MOCKOON API (REST) ############À#######################################################################
@@ -34,7 +35,7 @@ public class MainController {
     public List<User> getUsers(@RequestBody String username){
         // TODO: mockoon api --> TemplateRestConsumer
 
-        List<User> memberDTOList = new ArrayList<>();
+        List<User> memberDTOList = templateRestConsumer.findUsers("/Users");
 
         return memberDTOList;
     }

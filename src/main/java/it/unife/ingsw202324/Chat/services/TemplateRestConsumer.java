@@ -1,9 +1,10 @@
 
 package it.unife.ingsw202324.Chat.services;
 
+import it.unife.ingsw202324.Chat.models.entities.Event;
 import it.unife.ingsw202324.Chat.models.entities.User;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,23 +14,26 @@ public class TemplateRestConsumer {
 
     static String uriBaseMock = "http://localhost:3000/api/";
 
-    public static List<User> callREST(String resourceName, String uriBase, boolean useMock) {
-        // Usa WebClient invece di RestClient
-        WebClient webClient = WebClient.create();
+    public List<User> findUsers(String resourceName) {
+        /*
+            Input:
+                    resourceName:   indirizzo risorsa mockoon
+         */
+        RestClient restClient = RestClient.create();
 
-        // Se useMock è vero, usa l'URI base di Mockoon
-        if(useMock)
-            uriBase = uriBaseMock;
-
-        System.out.println(uriBase + resourceName);
+        System.out.println(uriBaseMock + resourceName);
         // Effettua la richiesta GET e mappa la risposta in un array di User
-        User[] users = webClient.get()
-                .uri(uriBase + resourceName)
+        User[] users = restClient.get()
+                .uri(uriBaseMock + resourceName)
                 .retrieve()
-                .bodyToMono(User[].class)
-                .block(); // Usa block per ottenere il risultato sincronicamente
+                .body(User[].class);
 
         // Converti l'array in una lista e restituiscila
+        if(users == null) return null;
         return Arrays.asList(users);
+    }
+
+    public static List<Event> findEvents(String resourceName){
+        return null;
     }
 }

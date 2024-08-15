@@ -19,10 +19,6 @@ public class ChatService {
     private ChatRepository chatRepository;
     @Autowired
     private MessageService messageService;
-    @Autowired
-    private MemberService memberService;
-    @Autowired
-    private EventService eventService;
 
 
 
