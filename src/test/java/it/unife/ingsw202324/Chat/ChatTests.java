@@ -1,12 +1,11 @@
 package it.unife.ingsw202324.Chat;
 
 import it.unife.ingsw202324.Chat.models.DTOs.*;
-import it.unife.ingsw202324.Chat.models.entities.Chat;
-import it.unife.ingsw202324.Chat.models.entities.Member;
-import it.unife.ingsw202324.Chat.models.entities.Message;
+import it.unife.ingsw202324.Chat.models.entities.*;
 import it.unife.ingsw202324.Chat.services.ChatService;
 import it.unife.ingsw202324.Chat.services.MemberService;
 import it.unife.ingsw202324.Chat.services.MessageService;
+import it.unife.ingsw202324.Chat.services.TemplateRestConsumer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +24,8 @@ class ChatTests {
 	MemberService memberService;
 	@Autowired
 	MessageService messageService;
+	@Autowired
+	TemplateRestConsumer templateRestConsumer;
 
 	@Test
 	void createChatTest() {
@@ -191,6 +192,23 @@ class ChatTests {
 		messageService.create(messageToAdd);
 
 		System.out.println("updated.");
+	}
+
+	@Test
+	void findUsersTest(){
+			String resourceName = "Users";
+			List<User> users = templateRestConsumer.findUsers(resourceName);
+		System.out.println(users.get(1));
+		System.out.println("Test eseguito con successo");
+	}
+
+
+	@Test
+	void findEventsTest(){
+		String resourceName = "Events";
+		List<Event> events = templateRestConsumer.findEvents(resourceName);
+		System.out.println(events.get(9));
+		System.out.println("Test eseguito con successo");
 	}
 
 }
