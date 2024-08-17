@@ -1,15 +1,13 @@
 package it.unife.ingsw202324.Chat.api;
 
-import it.unife.ingsw202324.Chat.models.DTOs.BasicChatDTO;
-import it.unife.ingsw202324.Chat.models.DTOs.ChatDTO;
-import it.unife.ingsw202324.Chat.models.DTOs.MemberDTO;
-import it.unife.ingsw202324.Chat.models.DTOs.MessageDTO;
+import it.unife.ingsw202324.Chat.models.DTOs.*;
 import it.unife.ingsw202324.Chat.models.entities.*;
 import it.unife.ingsw202324.Chat.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -27,26 +25,34 @@ public class MainController {
     private TemplateRestConsumer templateRestConsumer;
 
 
-    //### MOCKOON API (REST) ############À#######################################################################
+    //### MOCKOON API (REST) ####################################################################################
 
     // -- RICERCA UTENTI DISPONIBILI ---
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
-    @GetMapping("/available-users")
-    public List<User> getUsers(@RequestBody String username){
-        // TODO: mockoon api --> TemplateRestConsumer
+    @GetMapping("/available-users/{name}")
+    public List<User> getUsers(@PathVariable String name){
 
-        List<User> memberDTOList = templateRestConsumer.findUsers("/Users");
+        List<User> usersList = templateRestConsumer.findUsers("available-users");
+        if(usersList == null) return null;
+        //-- filtraggio secondo il nome (case insensitive)
+        return usersList.stream()
+                .filter(user -> user.getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
 
-        return memberDTOList;
     }
 
 
     // -- RICERCA EVENTO A CUI COLLEGARE LA CHAT ---
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
-    @GetMapping("/available-events")
-    public List<Event> getEvents(@RequestBody String eventName){
-        // TODO: mockoon api --> TemplateRestConsumer
-        return null;
+    @GetMapping("/available-events/{eventName}")
+    public List<Event> getEvents(@PathVariable String eventName){
+
+        List<Event> eventsList = templateRestConsumer.findEvents("available-events");
+        if(eventsList == null) return null;
+        //-- filtraggio secondo il nome (case insensitive)
+        return eventsList.stream()
+                .filter(event -> event.getName().toLowerCase().contains(eventName.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
 
@@ -113,13 +119,18 @@ public class MainController {
             List<Message> foundMessages = messageService.getMessagesByChat(foundChat);
             List<MessageDTO> messages = messageService.convertListToDTO(foundMessages);
             //-- cerca l'evento
-//            List<Event> foundEvent = getEvents(foundChat.getName());
-//            EventDTO event = eventService.convertToDTO(foundEvent.get(0));
+            List<Event> foundEvent = getEvents(foundChat.getName());
 
             ChatDTO convertedChat = chatService.convertToDTO(foundChat);
             convertedChat.setMembers(members);
             convertedChat.setMessages(messages);
-            convertedChat.setEvent(null);
+
+            if(foundEvent.size() == 1) {
+                EventDTO event = eventService.convertToDTO(foundEvent.get(0));
+                convertedChat.setEvent(event);
+            } else {
+                convertedChat.setEvent(null);
+            }
 
             return convertedChat;
 
@@ -134,17 +145,15 @@ public class MainController {
 
     //--- AGGIUNGI UN NUOVO UTENTE ALLA CHAT ---
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
-    @GetMapping("/chats/{name}/add-member")
-    public ChatDTO addUser(@RequestBody MemberDTO memberToAdd, @RequestBody ChatDTO chatDTO){
+    @PostMapping("/chats/{chatName}/add-member")
+    public ChatDTO addUser(@RequestBody MemberDTO memberToAdd, @PathVariable String chatName){
 
         //-- Conversione in model object
-        Chat chat = chatService.convertFromDTO(chatDTO);
+        Chat chat = chatService.getChatByName(chatName);
         Member member = memberService.convertFromDTO(memberToAdd, chat);
-
 
         //-- Aggiungi l'utente alla chat
         memberService.add(member);
-
 
         //-- restiiusci la chat aggiornata
         return chatService.convertToDTO(chatService.getChatByName(chat.getName()));
@@ -153,11 +162,11 @@ public class MainController {
 
     //--- RIMUOVI UTENTE DALLA CHAT ---
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
-    @GetMapping("/chats/{name}/removeUser")
-    public ChatDTO removeUser(@RequestBody MemberDTO memberToRemove, @RequestBody ChatDTO chatDTO){
+    @PostMapping("chats/{chatName}/remove-member")
+    public ChatDTO removeUser(@RequestBody MemberDTO memberToRemove, @PathVariable String chatName){
 
         //-- conversione in model obj
-        Chat chat = chatService.convertFromDTO(chatDTO);
+        Chat chat = chatService.getChatByName(chatName);
         Member member = memberService.convertFromDTO(memberToRemove, chat);
 
         memberService.remove(member);
@@ -173,12 +182,12 @@ public class MainController {
     //--- INVIO MESSAGGIO ---------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @PostMapping("/chats/{chatName}/message")
-    public void createMessage(@RequestBody MessageDTO request, @RequestBody ChatDTO chatDTO) {
+    public void createMessage(@RequestBody MessageDTO request, @PathVariable String chatName) {
         /*
             manda un nuovo messaggio
         */
-        Chat chat = chatService.convertFromDTO(chatDTO);
-        Member sender = memberService.getMemberByName(request.getSenderUsername());
+        Chat chat = chatService.getChatByName(chatName);
+        Member sender = memberService.getMemberByName(request.getSender());
         Message messageToAdd = messageService.convertFromDTO(request, chat, sender);
 
         messageService.create(messageToAdd);

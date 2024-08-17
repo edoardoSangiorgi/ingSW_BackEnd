@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class MessageDTO {
 
     private String content;
-    private String senderUsername;
+    private String sender;
     private LocalDateTime timestamp;
 
 }

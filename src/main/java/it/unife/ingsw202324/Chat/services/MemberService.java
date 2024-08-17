@@ -51,8 +51,8 @@ public class MemberService {
                 memberDTO.getSurname(),
                 memberDTO.getBirthDate(),
                 memberDTO.getDeleted(),
-                chat,
-                memberDTO.getAdmin()
+                memberDTO.getAdmin(),
+                chat
         );
 
     }
@@ -66,7 +66,7 @@ public class MemberService {
     }
 
     public List<Member> getMembersByChat(Chat chat){
-        return userRepository.findAllByChatAndDeletedIsFalse(chat);
+        return userRepository.findAllById_ChatAndDeletedIsFalse(chat);
     }
 
     //--- AGGIUNGI UTENTE ----------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ public class MemberService {
     }
 
     public Member getMemberByName(String username){
-        return userRepository.findMemberByUsername(username);
+        return userRepository.findMemberById_Username(username);
     }
 
 

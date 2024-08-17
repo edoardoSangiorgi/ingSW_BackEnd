@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<Member, Long> {
+public interface UserRepository extends JpaRepository<Member, Member.MemberPK> {
 
-    public List<Member> findAllByChatAndDeletedIsFalse(Chat chat);
-    public Member findMemberByUsername(String username);
+     List<Member> findAllById_ChatAndDeletedIsFalse(Chat chat);
+     Member findMemberById_Username(String username);
 
 }

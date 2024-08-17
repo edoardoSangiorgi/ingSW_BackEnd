@@ -40,7 +40,7 @@ public class MessageService {
 
 
         newDto.setContent(message.getContent());
-        newDto.setSenderUsername(message.getSender().getUsername());
+        newDto.setSender(message.getSender().getUsername());
         newDto.setTimestamp(message.getTimestamp());
 
         return newDto;

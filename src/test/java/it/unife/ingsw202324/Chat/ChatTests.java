@@ -4,16 +4,21 @@ import it.unife.ingsw202324.Chat.models.DTOs.*;
 import it.unife.ingsw202324.Chat.models.entities.Chat;
 import it.unife.ingsw202324.Chat.models.entities.Member;
 import it.unife.ingsw202324.Chat.models.entities.Message;
+import it.unife.ingsw202324.Chat.models.entities.User;
 import it.unife.ingsw202324.Chat.services.ChatService;
 import it.unife.ingsw202324.Chat.services.MemberService;
 import it.unife.ingsw202324.Chat.services.MessageService;
+import it.unife.ingsw202324.Chat.services.TemplateRestConsumer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -25,6 +30,8 @@ class ChatTests {
 	MemberService memberService;
 	@Autowired
 	MessageService messageService;
+	@Autowired
+	TemplateRestConsumer templateRestConsumer;
 
 	@Test
 	void createChatTest() {
@@ -45,9 +52,9 @@ class ChatTests {
 
 		System.out.println("members creation...");
 		// Creiamo i membri
-		Member member1 = new Member("user1", "Nicola", "Rossi", LocalDate.of(2002, 7, 31), false, chat, false);
-		Member member2 = new Member("user2", "Margherita", "Verdi", LocalDate.of(2002, 7, 31), false, chat, true); // admin
-		Member member3 = new Member("user3", "Anna", "Bianchi", LocalDate.of(2002, 7, 31), false, chat, false);
+		Member member1 = new Member("user1", "Nicola", "Rossi", LocalDate.of(2002, 7, 31), false, false, chat);
+		Member member2 = new Member("user2", "Margherita", "Verdi", LocalDate.of(2002, 7, 31), false, true, chat); // admin
+		Member member3 = new Member("user3", "Anna", "Bianchi", LocalDate.of(2002, 7, 31), false, false, chat);
 
 		// Creiamo una lista e aggiungiamo i membri
 		List<Member> members = new ArrayList<>();
@@ -155,7 +162,7 @@ class ChatTests {
 
 
 		Chat chat = chatService.getChatByName("Event-1");
-		MemberDTO memberToAdd = new MemberDTO("user10", "Alessandro", "Bianchi", LocalDate.of(2002, 7, 31), false, false);
+		MemberDTO memberToAdd = new MemberDTO("selfuser", "Tu", "Tu", LocalDate.of(2002, 7, 31), false, true);
 
 		//-- Aggiungi l'utente alla chat
 		memberService.add(memberService.convertFromDTO(memberToAdd, chat));
@@ -185,12 +192,29 @@ class ChatTests {
 				"user1",
 				LocalDateTime.of(2024, 8, 13, 13, 45)
 		);
-		Member sender = memberService.getMemberByName(request.getSenderUsername());
+		Member sender = memberService.getMemberByName(request.getSender());
 		Message messageToAdd = messageService.convertFromDTO(request, chat, sender);
 
 		messageService.create(messageToAdd);
 
 		System.out.println("updated.");
+	}
+
+	@Test
+	void getUsersTest(){
+		/*
+            Input:
+                    resourceName:   indirizzo risorsa mockoon
+         */
+		String uriBaseMock = "http://localhost:3000/";
+		String resourceName = "users";
+
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<User[]> response = restTemplate.getForEntity(uriBaseMock + "available-users", User[].class);
+		List<User> users = Arrays.asList(response.getBody());
+
+		System.out.println("completed.");
+
 	}
 
 }

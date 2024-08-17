@@ -23,7 +23,7 @@ public class Chat {
     private Boolean deleted;
     private LocalDate creationDate;
 
-    @OneToMany(mappedBy = "chat")
+    @OneToMany(mappedBy = "id.chat")
     private List<Member> members;
 
     @OneToMany
