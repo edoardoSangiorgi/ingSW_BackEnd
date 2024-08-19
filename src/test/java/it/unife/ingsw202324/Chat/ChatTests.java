@@ -40,7 +40,7 @@ class ChatTests {
 
 		Chat chat = new Chat(
 				null,
-				"Event-1",
+				"Event-2",
 				"group",
 				false,
 				LocalDate.of(2024, 5, 23),
@@ -52,16 +52,18 @@ class ChatTests {
 
 		System.out.println("members creation...");
 		// Creiamo i membri
-		Member member1 = new Member("user1", "Nicola", "Rossi", LocalDate.of(2002, 7, 31), false, false, chat);
-		Member member2 = new Member("user2", "Margherita", "Verdi", LocalDate.of(2002, 7, 31), false, true, chat); // admin
-		Member member3 = new Member("user3", "Anna", "Bianchi", LocalDate.of(2002, 7, 31), false, false, chat);
+		Member member1 = new Member("user4", "Matteo", "Rossi", LocalDate.of(2002, 7, 31), false, true, chat);
+		Member member2 = new Member("user2", "Sofia", "Verdi", LocalDate.of(2002, 7, 31), false, false, chat);
+		Member member3 = new Member("user5", "Alessandro", "Bianchi", LocalDate.of(2002, 7, 31), false, false, chat);
+		Member member4 = new Member("selfuser", "Tu", "Tu", LocalDate.of(2002, 7, 31), false, true, chat);
 
 		// Creiamo una lista e aggiungiamo i membri
 		List<Member> members = new ArrayList<>();
 		members.add(member1);
 		members.add(member2);
 		members.add(member3);
-		
+		members.add(member4);
+
 		
 		System.out.println("chat saving...");
 
@@ -82,7 +84,7 @@ class ChatTests {
 	@Test
 	void getChatTest(){
 		//-- cerca la chat
-		Chat foundChat = chatService.getChatByName("Event-1");
+		Chat foundChat = chatService.getChatByNameOrId("Event-1");
 		//-- cerca i membri
 		List<Member> foundMembers = memberService.getMembersByChat(foundChat);
 		List<MemberDTO> members = memberService.convertListToDTO(foundMembers);
@@ -161,7 +163,7 @@ class ChatTests {
 	void addUserTest(){
 
 
-		Chat chat = chatService.getChatByName("Event-1");
+		Chat chat = chatService.getChatByNameOrId("Event-1");
 		MemberDTO memberToAdd = new MemberDTO("selfuser", "Tu", "Tu", LocalDate.of(2002, 7, 31), false, true);
 
 		//-- Aggiungi l'utente alla chat
@@ -174,7 +176,7 @@ class ChatTests {
 	void removeUser(){
 
 		//-- conversione in model obj
-		Chat chat = chatService.getChatByName("Event-1");
+		Chat chat = chatService.getChatByNameOrId("Event-1");
 		MemberDTO memberToRemove = new MemberDTO("user10", "Alessandro", "Bianchi", LocalDate.of(2002, 7, 31), false, false);
 
 		Member member = memberService.convertFromDTO(memberToRemove, chat);
@@ -186,13 +188,13 @@ class ChatTests {
 	@Test
 	void createMessageTest(){
 
-		Chat chat = chatService.getChatByName("Event-1");
+		Chat chat = chatService.getChatByNameOrId("Event-1");
 		MessageDTO request = new MessageDTO(
-				"ciao a tutti!",
-				"user1",
+				"come state?",
+				"selfuser",
 				LocalDateTime.of(2024, 8, 13, 13, 45)
 		);
-		Member sender = memberService.getMemberByName(request.getSender());
+		Member sender = memberService.getMemberByUsernameAndChat(request.getSender(), chat);
 		Message messageToAdd = messageService.convertFromDTO(request, chat, sender);
 
 		messageService.create(messageToAdd);

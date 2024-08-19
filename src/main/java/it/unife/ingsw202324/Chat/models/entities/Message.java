@@ -22,6 +22,7 @@ public class Message {
     private LocalDateTime timestamp;
 
     @OneToOne
+    @JoinColumn(name = "chat_id")
     private Chat chat;
 
     @ManyToOne

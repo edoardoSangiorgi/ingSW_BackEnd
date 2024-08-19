@@ -84,7 +84,16 @@ public class MessageService {
             cerca l'ultimo messaggio di una chat
             formatta l'ultimo messaggio in una stringa
          */
-        Message lastMessage =  messageRepository.findLastMessageByChat(chat);
+        List<Message> lastMessageList =  messageRepository.findLastMessageByChat(chat);
+        Message lastMessage;
+
+        if(lastMessageList.isEmpty()) return "";
+        if(lastMessageList.size() > 1){
+            int length = lastMessageList.size();
+            lastMessage = lastMessageList.get(length-1);
+        } else {
+            lastMessage = lastMessageList.get(0);
+        }
         String content = "";
         if(lastMessage != null){
             String text = lastMessage.getContent();

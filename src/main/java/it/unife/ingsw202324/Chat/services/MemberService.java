@@ -83,8 +83,9 @@ public class MemberService {
         create(memberToDelete);
     }
 
-    public Member getMemberByName(String username){
-        return userRepository.findMemberById_Username(username);
+    public Member getMemberByUsernameAndChat(String username, Chat chat){
+        Member.MemberPK memberPK = new Member.MemberPK(username, chat);
+        return userRepository.findMemberById(memberPK);
     }
 
 

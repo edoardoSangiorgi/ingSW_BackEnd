@@ -70,7 +70,7 @@ public class ChatService {
     //### METODI ###################################################################################À
 
     // --- LETTURA SINGOLA CHAT -----------------------------------------------------------------------------
-    public Chat getChatByName(String chatName){
+    public Chat getChatByNameOrId(String chatName){
         /*
             recupera la singola chat in base al nome
 
@@ -83,8 +83,9 @@ public class ChatService {
          */
 
         // -- cerca la chat dal DB
-        return chatRepository.findByName(chatName).orElseThrow(() -> new RuntimeException("Chat not found"));
+        return chatRepository.findByName(chatName).orElse(null);
     }
+
 
 
     // -- LETTURA LISTA CHAT --------------------------------------------------------------------------------

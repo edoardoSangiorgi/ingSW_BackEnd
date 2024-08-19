@@ -15,5 +15,5 @@ public interface MessageRepository extends JpaRepository<Message, Long>{
 
     //-- recupera il messaggio
     @Query("SELECT m FROM Message m WHERE m.chat = :chat ORDER BY m.timestamp DESC")
-    Message findLastMessageByChat(Chat chat);
+    List<Message> findLastMessageByChat(Chat chat);
 }

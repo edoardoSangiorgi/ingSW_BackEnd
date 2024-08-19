@@ -11,6 +11,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<Member, Member.MemberPK> {
 
      List<Member> findAllById_ChatAndDeletedIsFalse(Chat chat);
-     Member findMemberById_Username(String username);
+     Member findMemberById(Member.MemberPK memberPK);
 
 }
