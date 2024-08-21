@@ -70,7 +70,7 @@ public class ChatService {
     //### METODI ###################################################################################À
 
     // --- LETTURA SINGOLA CHAT -----------------------------------------------------------------------------
-    public Chat getChatByNameOrId(String chatName){
+    public Chat getChatByName(String chatName){
         /*
             recupera la singola chat in base al nome
 
@@ -90,6 +90,7 @@ public class ChatService {
 
     // -- LETTURA LISTA CHAT --------------------------------------------------------------------------------
     public List<Chat> getAll(){
+        //TODO: filtrare la chat in cui selfuser deleted=false
         return chatRepository.findAll();
     }
 

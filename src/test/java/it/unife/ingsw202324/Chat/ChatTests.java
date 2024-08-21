@@ -84,7 +84,7 @@ class ChatTests {
 	@Test
 	void getChatTest(){
 		//-- cerca la chat
-		Chat foundChat = chatService.getChatByNameOrId("Event-1");
+		Chat foundChat = chatService.getChatByName("Event-1");
 		//-- cerca i membri
 		List<Member> foundMembers = memberService.getMembersByChat(foundChat);
 		List<MemberDTO> members = memberService.convertListToDTO(foundMembers);
@@ -163,7 +163,7 @@ class ChatTests {
 	void addUserTest(){
 
 
-		Chat chat = chatService.getChatByNameOrId("Event-1");
+		Chat chat = chatService.getChatByName("Event-1");
 		MemberDTO memberToAdd = new MemberDTO("selfuser", "Tu", "Tu", LocalDate.of(2002, 7, 31), false, true);
 
 		//-- Aggiungi l'utente alla chat
@@ -176,7 +176,7 @@ class ChatTests {
 	void removeUser(){
 
 		//-- conversione in model obj
-		Chat chat = chatService.getChatByNameOrId("Event-1");
+		Chat chat = chatService.getChatByName("Event-1");
 		MemberDTO memberToRemove = new MemberDTO("user10", "Alessandro", "Bianchi", LocalDate.of(2002, 7, 31), false, false);
 
 		Member member = memberService.convertFromDTO(memberToRemove, chat);
@@ -188,7 +188,7 @@ class ChatTests {
 	@Test
 	void createMessageTest(){
 
-		Chat chat = chatService.getChatByNameOrId("Event-1");
+		Chat chat = chatService.getChatByName("Event-1");
 		MessageDTO request = new MessageDTO(
 				"come state?",
 				"selfuser",
@@ -214,6 +214,29 @@ class ChatTests {
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<User[]> response = restTemplate.getForEntity(uriBaseMock + "available-users", User[].class);
 		List<User> users = Arrays.asList(response.getBody());
+
+		System.out.println("completed.");
+
+	}
+
+	@Test
+	void newAdminTest(){
+
+		Chat chat = chatService.getChatByName("Summer Fest");
+		Member member = memberService.convertFromDTO(
+				new MemberDTO(
+						"user1",
+						"Nicola",
+						"Rossi",
+						LocalDate.of(2002, 7, 31),
+						false,
+						false
+				),
+				chat
+		);
+
+		member.setAdmin(true);
+		memberService.create(member);
 
 		System.out.println("completed.");
 

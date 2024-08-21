@@ -89,8 +89,7 @@ public class MessageService {
 
         if(lastMessageList.isEmpty()) return "";
         if(lastMessageList.size() > 1){
-            int length = lastMessageList.size();
-            lastMessage = lastMessageList.get(length-1);
+            lastMessage = lastMessageList.get(0);
         } else {
             lastMessage = lastMessageList.get(0);
         }

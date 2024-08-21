@@ -29,6 +29,7 @@ public class TemplateRestConsumer {
 
     }
 
+
     public List<Event> findEvents(String resourceName){
         /*
             Input:

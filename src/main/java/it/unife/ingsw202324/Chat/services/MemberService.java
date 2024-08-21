@@ -3,6 +3,7 @@ package it.unife.ingsw202324.Chat.services;
 import it.unife.ingsw202324.Chat.models.DTOs.MemberDTO;
 import it.unife.ingsw202324.Chat.models.entities.Chat;
 import it.unife.ingsw202324.Chat.models.entities.Member;
+import it.unife.ingsw202324.Chat.models.entities.User;
 import it.unife.ingsw202324.Chat.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,26 @@ public class MemberService {
 
     }
 
+    public List<Member> convertListFromDTO(List<MemberDTO> listToConvert, Chat chat){
+        List<Member> convertedList = new ArrayList<>();
+        for(MemberDTO memberToConvert: listToConvert){
+            convertedList.add(convertFromDTO(memberToConvert, chat));
+        }
+
+        return convertedList;
+    }
+
+    public Member convertFromUser(User userToConvert, Chat chat){
+        return new Member(
+                userToConvert.getUsername(),
+                userToConvert.getName(),
+                userToConvert.getSurname(),
+                userToConvert.getBirthDate(),
+                false,
+                false,
+                chat
+        );
+    }
 
 
     //### METODI ##########################################################################################
@@ -65,14 +86,19 @@ public class MemberService {
         userRepository.save(memberToSave);
     }
 
+    //--- CREA UNA LISTA DI UTENTI -----------------------------------------------------------------
+    public void createList(List<Member> membersToCreate){
+        for(Member memberToCreate: membersToCreate){
+            create(memberToCreate);
+        }
+    }
+
     public List<Member> getMembersByChat(Chat chat){
         return userRepository.findAllById_ChatAndDeletedIsFalse(chat);
     }
 
     //--- AGGIUNGI UTENTE ----------------------------------------------------------------------------------
     public void add(Member memberToAdd){
-//        Chat chat = memberToAdd.getChat();
-//        chat.addMember(memberToAdd);
         create(memberToAdd);
     }
 
