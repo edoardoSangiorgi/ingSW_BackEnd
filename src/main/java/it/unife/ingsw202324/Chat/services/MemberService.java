@@ -79,6 +79,33 @@ public class MemberService {
         );
     }
 
+    public List<Member> convertFromUserList(List<User> listToConvert, Chat chat){
+        List<Member> convertedList = new ArrayList<>();
+        for(User userToConvert: listToConvert){
+            convertedList.add(convertFromUser(userToConvert, chat));
+        }
+
+        return convertedList;
+    }
+
+    public User convertToUser(Member memberToConvert){
+        return new User(
+                memberToConvert.getUsername(),
+                memberToConvert.getName(),
+                memberToConvert.getSurname(),
+                memberToConvert.getBirthDate()
+        );
+    }
+
+    public List<User> convertToUserList(List<Member> listToConvert){
+        List<User> convertedList = new ArrayList<>();
+        for(Member memberToConvert: listToConvert){
+            convertedList.add(convertToUser(memberToConvert));
+        }
+
+        return convertedList;
+    }
+
 
     //### METODI ##########################################################################################
 

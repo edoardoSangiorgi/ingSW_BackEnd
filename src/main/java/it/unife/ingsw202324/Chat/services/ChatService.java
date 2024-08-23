@@ -90,8 +90,7 @@ public class ChatService {
 
     // -- LETTURA LISTA CHAT --------------------------------------------------------------------------------
     public List<Chat> getAll(){
-        //TODO: filtrare la chat in cui selfuser deleted=false
-        return chatRepository.findAll();
+        return chatRepository.findAllChatsWithNonDeletedSelfUser();
     }
 
 

@@ -242,4 +242,16 @@ class ChatTests {
 
 	}
 
+	@Test
+	void leaveChatTest(){
+
+		Chat chat = chatService.getChatByName("Gruppo Prova");
+		Member selfuser = memberService.getMemberByUsernameAndChat("selfuser", chat);
+		selfuser.setDeleted(true);
+
+		memberService.create(selfuser);
+
+		System.out.println("completed");
+	}
+
 }

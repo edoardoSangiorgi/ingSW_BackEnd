@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -31,7 +34,7 @@ public class MainController {
 
     //### MOCKOON API (REST) ####################################################################################
 
-    // --- LETTURA UTENTI ---
+    //--- LETTURA TUTTI GLI UTENTI DISPONIBILI ---
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/available-users")
     public List<User> getAvailableUsers(){
@@ -39,9 +42,32 @@ public class MainController {
     }
 
 
+    // --- LETTURA UTENTI DISPONIBILI PER UNA CHAT ---
+    @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
+    @GetMapping("/{chatName}/available-users")
+    public List<User> getAvailableUsers(@PathVariable String chatName){
+        List<User> users = templateRestConsumer.findUsers("available-users");
+
+        /*
+            recupero gli utenti dal db che sono collegati a quella chat
+            e filtro gli utenti disponibili in base a quelli che non sono membri
+         */
+        Chat chat = chatService.getChatByName(chatName);
+        List<Member> membersFromDB = memberService.getMembersByChat(chat);
+        List<User> usersFromDB = memberService.convertToUserList(membersFromDB);
+
+        //-- lascio solamente gli elementi unici
+        Set<User> set = new HashSet<>(users);
+        set.addAll(usersFromDB);
+
+        return new ArrayList<>(set);
+
+    }
+
+
     //--- RICERCA UTENTE ---
     private User getUser(String username){
-        List<User> users = getAvailableUsers();
+        List<User> users = templateRestConsumer.findUsers("available-users");
         return  users.stream()
                 .filter(user -> user.getUsername().equals(username))
                 .findFirst()
@@ -126,8 +152,28 @@ public class MainController {
         //-- recupero le chat dal db
         List<Chat> allChats = chatService.getAll();
 
+        //-- recupero tutti gli eventi
+        List<Event> events = templateRestConsumer.findEvents("available-events");
+
+        // Estraggo tutti i nomi degli eventi in un Set per una ricerca più efficiente
+        Set<String> eventNames = events.stream()
+                .map(Event::getName) // Estrae il campo nome di ciascun evento
+                .collect(Collectors.toSet());
+
+
+        // Filtra la lista allChats:
+        // - Se la chat è di tipo "group", verifica se il nome è presente negli eventi
+        // - Altrimenti, aggiungila direttamente alla lista filtrata
+        List<Chat> filteredChats = allChats.stream()
+                .filter(chat ->
+                        // Filtra solo le chat di tipo "group"
+                        !"group".equals(chat.getType()) || eventNames.contains(chat.getName()) // Mantiene tutte le altre chat
+                )
+                .toList();
+
+
         //-- conversione
-        return chatService.convertListToBasicDTO(allChats);
+        return chatService.convertListToBasicDTO(filteredChats);
     }
 
 
@@ -154,9 +200,9 @@ public class MainController {
                 User foundUser = getUser(name);
                 MemberDTO selfUser = new MemberDTO("selfuser", "Tu", "Tu", LocalDate.of(2002, 8, 29), false, false);
                 MemberDTO member = new MemberDTO(foundUser.getUsername(), foundUser.getName(), foundUser.getSurname(), foundUser.getBirthDate(), false, false);
-                List<MemberDTO> members = new ArrayList<MemberDTO>();
-                members.add(member);
+                List<MemberDTO> members = new ArrayList<>();
                 members.add(selfUser);
+                members.add(member);
 
                 createChat(
                         new ChatDTO(name, "private", LocalDate.now(), members, null, null)
@@ -178,7 +224,8 @@ public class MainController {
 
             //-- cerca l'evento
             if(convertedChat.getType().equals("group"))
-                convertedChat.setEvent(eventService.convertToDTO(
+                convertedChat.setEvent(
+                        eventService.convertToDTO(
                         getChatEvent(foundChat.getName())
                 ));
             else
