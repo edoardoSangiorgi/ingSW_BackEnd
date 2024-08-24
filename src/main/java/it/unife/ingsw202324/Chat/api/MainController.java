@@ -46,12 +46,21 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/{chatName}/available-users")
     public List<User> getAvailableUsers(@PathVariable String chatName){
+        /*
+            Input:
+                    chatName:       nome della chat
+                    String
+
+            Output:
+                    List<Users>:    lista di tutti gli utenti disponibli
+                                    (quelli già presenti non vengono inclusi)
+        */
         List<User> users = templateRestConsumer.findUsers("available-users");
 
         /*
             recupero gli utenti dal db che sono collegati a quella chat
             e filtro gli utenti disponibili in base a quelli che non sono membri
-         */
+        */
         Chat chat = chatService.getChatByName(chatName);
         List<Member> membersFromDB = memberService.getMembersByChat(chat);
         List<User> usersFromDB = memberService.convertToUserList(membersFromDB);
@@ -67,6 +76,17 @@ public class MainController {
 
     //--- RICERCA UTENTE ---
     private User getUser(String username){
+        /*
+            cerca un utente specifico
+
+            Input:
+                    username    :   username dell'utente (parametro di ricerca)
+                    String
+
+            Output:
+                    User        :   utente trovato
+                    null        :   utente non trovato
+         */
         List<User> users = templateRestConsumer.findUsers("available-users");
         return  users.stream()
                 .filter(user -> user.getUsername().equals(username))
@@ -79,6 +99,14 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @GetMapping("/available-events")
     public List<Event> getAvailableEvents(){
+        /*
+            legge tutti gli eventi disponibili
+            ovvero quelli che non sono collegati a nessuna chat
+
+            Output:
+                    List<Event>:    lista degli eventi
+                                    (in questo caso l'attributo nome è incluso)
+         */
         List<Event> events = templateRestConsumer.findEvents("available-events");
         List<BasicChatDTO> chatDTOList = getChatList();
 
@@ -103,6 +131,17 @@ public class MainController {
 
     // --- RICERCA EVENTO CHAT ---
     private Event getChatEvent(String eventName){
+        /*
+            ricerca un evento specifico
+
+            Input:
+                    eventName   :   nome dell'evento (parametro di ricerca)
+                    String
+
+            Output:
+                    Event       :   evento trovato
+                    null        :   evento non trovato
+         */
         List<Event> events = templateRestConsumer.findEvents("available-events");
         return  events.stream()
                 .filter(event -> event.getName().equals(eventName))
@@ -123,9 +162,6 @@ public class MainController {
             Input:
                     request     :   contiene tutte le info della chat da creare
                     ChatDTO
-
-            Output:
-                    List<ChatDTO>:  tutte le chat
          */
         Chat chatToSave = chatService.convertFromDTO(request);
         List<Member> membersToSave = memberService.convertListFromDTO(request.getMembers(), chatToSave);
@@ -183,7 +219,13 @@ public class MainController {
     public ChatDTO getChat(@PathVariable String name){
         /*
             ritorna l'oggetto chat ricercato
-            se l'oggetto non esiste -> ritorna null
+
+            Input:
+                    name    :   nome della chat
+                    String
+
+            Output:
+                    ChatDTO :   chat trovata
          */
         try {
             //-- cerca la chat
@@ -211,9 +253,11 @@ public class MainController {
 
             //-- cerca la chat (stavolta sperando di trovarla)
             foundChat = chatService.getChatByName(name);
+
             //-- cerca i membri
             List<Member> foundMembers = memberService.getMembersByChat(foundChat);
             List<MemberDTO> members = memberService.convertListToDTO(foundMembers);
+
             //-- cerca i messaggi
             List<Message> foundMessages = messageService.getMessagesByChat(foundChat);
             List<MessageDTO> messages = messageService.convertListToDTO(foundMessages);
@@ -251,6 +295,19 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @PostMapping("/chats/{chatName}/add-member")
     public ChatDTO addUser(@RequestBody MemberDTO memberToAdd, @PathVariable String chatName){
+        /*
+            aggiunge un nuovo utente alla chat
+
+            Input:
+                    memberToAdd     :   utente da aggiungere
+                    MemberDTO
+
+                    chatName        :   nome della chat a cui aggiungere l'utente
+                    String
+
+            Output:
+                    ChatDTO         :   chat aggiornata
+         */
 
         //-- Conversione in model object
         Chat chat = chatService.getChatByName(chatName);
@@ -268,6 +325,19 @@ public class MainController {
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @PostMapping("chats/{chatName}/remove-member")
     public ChatDTO removeUser(@RequestBody MemberDTO memberToRemove, @PathVariable String chatName){
+        /*
+            rimuove un utente dalla chat
+
+            Input:
+                    memberToRemove  :   utente da rimuovere
+                    MemberDTO
+
+                    chatName        :   nome della chat da cui rimuovere l'utente
+                    String
+
+            Output:
+                    ChatDTO         :   chat aggiornata
+         */
 
         //-- conversione in model obj
         Chat chat = chatService.getChatByName(chatName);
@@ -292,14 +362,14 @@ public class MainController {
                     MemberDTO
          */
         Chat chat = chatService.getChatByName(chatName);
+        request.setAdmin(true);
         Member member = memberService.convertFromDTO(request, chat);
 
-        member.setAdmin(true);
         memberService.create(member);
     }
 
 
-    //--- ESCI DALLA CHAT (per l'utente selfuser)
+    //--- ESCI DALLA CHAT (per l'utente selfuser) ---
     @CrossOrigin(origins = "http://localhost:5173") //indirizzo del frontend
     @PostMapping("chats/{chatName}/leave-chat")
     public void leaveChat(@PathVariable String chatName){
@@ -327,6 +397,13 @@ public class MainController {
     public void createMessage(@RequestBody MessageDTO request, @PathVariable String chatName) {
         /*
             manda un nuovo messaggio
+
+            Input:
+                    request     :   messaggio da aggiungere
+                    MessageDTO
+
+                    chatName    :   nome della chat in cui il messaggio è stato inviato
+                    String
         */
         Chat chat = chatService.getChatByName(chatName);
         Member sender = memberService.getMemberByUsernameAndChat(request.getSender(), chat);

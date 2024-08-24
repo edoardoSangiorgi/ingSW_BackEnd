@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Event {
     /*
-        ### CLASSE DI SERVIZIO #############################################################À
-
         È associata alla chat dell'evento specifico
      */
     private String name;

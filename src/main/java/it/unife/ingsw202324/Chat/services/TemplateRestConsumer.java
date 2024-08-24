@@ -16,8 +16,14 @@ public class TemplateRestConsumer {
 
     public List<User> findUsers(String resourceName) {
         /*
+            legge tutti gli utenti da mockoon
+
             Input:
                     resourceName:   indirizzo risorsa mockoon
+                    String
+
+            Output:
+                    List<Users>:    lista degli utenti
          */
 
         RestTemplate restTemplate = new RestTemplate();
@@ -32,8 +38,14 @@ public class TemplateRestConsumer {
 
     public List<Event> findEvents(String resourceName){
         /*
+            legge tutti gli eventi da mockoon
+
             Input:
                     resourceName:   indirizzo risorsa mockoon
+                    String
+
+            Output:
+                    List<Event>:    lista degli eventi
          */
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Event[]> response = restTemplate.getForEntity(uriBaseMock + resourceName, Event[].class);

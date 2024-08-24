@@ -10,6 +10,7 @@ public class EventService {
     //### CONVERSIONE ############################################################################à
 
     public Event convertFromDTO(EventDTO eventToConvert, String name){
+        // EventDTO ---> Event
         return new Event(
                 name,
                 eventToConvert.getDescription(),
@@ -21,8 +22,9 @@ public class EventService {
         );
     }
 
-    public EventDTO convertToDTO(Event eventToConvert){
-        if(eventToConvert == null) return null;
+    public EventDTO convertToDTO(Event eventToConvert) {
+        // Event ---> EventDTO
+        if (eventToConvert == null) return null;
         return new EventDTO(
                 eventToConvert.getDescription(),
                 eventToConvert.getType(),
@@ -32,10 +34,4 @@ public class EventService {
                 eventToConvert.getEnd()
         );
     }
-
-
-    //### METODI #############################################################################
-
-
-
 }

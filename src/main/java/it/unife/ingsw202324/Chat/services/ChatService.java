@@ -24,6 +24,7 @@ public class ChatService {
 
     //### CONVERSIONE ###########################################################################################À
     public Chat convertFromDTO(ChatDTO chatDTO){
+        // ChatDTO ---> Chat
         return new Chat(
                 null,
                 chatDTO.getChatName(),
@@ -38,6 +39,7 @@ public class ChatService {
     }
 
     public ChatDTO convertToDTO(Chat chat){
+        // Chat ---> ChatDTO
         return new ChatDTO(
                 chat.getName(),
                 chat.getType(),
@@ -51,6 +53,9 @@ public class ChatService {
     }
 
     public List<BasicChatDTO> convertListToBasicDTO(List<Chat> listToConvert){
+        /*
+            Lista di Chat ---> Lista di BasicChatDTO
+         */
 
         List<BasicChatDTO> convertedList = new ArrayList<>();
         for(Chat chat: listToConvert){
@@ -76,6 +81,7 @@ public class ChatService {
 
             Input:
                     chatName:       nome della chat da trovare
+                    String
 
             Output:
                     Chat:           L'oggetto chat da restituire al controller
@@ -90,6 +96,10 @@ public class ChatService {
 
     // -- LETTURA LISTA CHAT --------------------------------------------------------------------------------
     public List<Chat> getAll(){
+        /*
+            trova tutte le chat in cui il membro selfuser è settato come
+            deleted = false
+         */
         return chatRepository.findAllChatsWithNonDeletedSelfUser();
     }
 
@@ -98,16 +108,12 @@ public class ChatService {
     // -- CREAZIONE NUOVA CHAT ------------------------------------------------------------------------------
     public void create(Chat chatToSave){
         /*
-            INPUT:
-                    request:    l'oggetto che coniene le info della chat dal client
-                    CreateRequestChat
+            salva una nuova chat sul db
 
-            COSA FA:
-                    - converte request in un'oggetto chat
-                    - salva l'oggetto chat sul DB
+            Input:
+                    chatToSave  :   nuova chat da salvare
+                    Chat
          */
-
-
         chatRepository.save(chatToSave);
     }
 
@@ -115,13 +121,29 @@ public class ChatService {
 
     // -- UPDATE CHAT ---------------------------------------------------------------------------------------
     public void update(Chat chatToUpdate){
+        /*
+            esegue l'update du una chat sul db
+
+            Input:
+                    chatToUpdate  :   chat da aggiornate
+                    Chat
+         */
         create(chatToUpdate);
     }
 
 
     // -- ELIMINAZIONE CHAT ---------------------------------------------------------------------------------
-    public void deleteChat(Long chatId){
-        chatRepository.deleteById(chatId);
+    public void deleteChat(Chat chatToDelete){
+        /*
+            cancella una chat livello logico
+            setta deleted = true
+
+            Input:
+                    chatToDelete    :   chat da rimuovere
+                    Chat
+         */
+        chatToDelete.setDeleted(true);
+        update(chatToDelete);
     }
 
 

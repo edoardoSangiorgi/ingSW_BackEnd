@@ -23,8 +23,7 @@ public class MessageService {
 
     //### CONVERSIONE ###############################################################################À
     public Message convertFromDTO(MessageDTO messageDTO, Chat chat, Member sender){
-
-
+        // MessageDTO ---> Message
         return new Message(
                 null,
                 messageDTO.getContent(),
@@ -35,18 +34,16 @@ public class MessageService {
     }
 
     public MessageDTO convertToDTO(Message message){
-
-        MessageDTO newDto = new MessageDTO();
-
-
-        newDto.setContent(message.getContent());
-        newDto.setSender(message.getSender().getUsername());
-        newDto.setTimestamp(message.getTimestamp());
-
-        return newDto;
+        // Message ---> MessageDTO
+        return new MessageDTO(
+                message.getContent(),
+                message.getSender().getUsername(),
+                message.getTimestamp()
+        );
     }
 
     public List<MessageDTO> convertListToDTO(List<Message> listToConvert){
+        // Lista di MessageDTO ---> Lista di Message
         List<MessageDTO> convertedList = new ArrayList<>();
         for(Message message: listToConvert){
             convertedList.add(convertToDTO(message));
@@ -55,23 +52,33 @@ public class MessageService {
     }
 
 
+    //### METODI ###########################################################################################
+
 
     // -- CREA UN NUOVO MESSAGGIO -------------------------------------------------------------------------
-    public void create(Message message){
-        messageRepository.save(message);
+    public void create(Message messageToSave){
+        /*
+            salva un nuovo messaggio sul sb
+
+            Input:
+                    messageToSave   :   messaggio da salvare
+                    Message
+         */
+        messageRepository.save(messageToSave);
     }
 
 
     // -- CERCA MESSAGGI DI UNA CHAT -----------------------------------------------------------------------
     public List<Message> getMessagesByChat(Chat chat){
         /*
+            cerca tutti i messaggi inviati in una chat
+
             Input:
-                    chatDTO:    oggetto DTO con le info sulla chat
-                    ChatDTO
+                    chat            :    chat della quale si vogliono i messaggi
+                    Chat
 
             Output:
-                    dtoList:    lista di messaggi da ritornare al Client
-                    List<MessageDTO>
+                    List<Message>   :   lista di messaggi inviato
 
          */
         return messageRepository.findByChat(chat);
@@ -82,7 +89,14 @@ public class MessageService {
     public String getLastMessageByChat(Chat chat){
         /*
             cerca l'ultimo messaggio di una chat
-            formatta l'ultimo messaggio in una stringa
+
+            Input:
+                    chat    :   chat della quale si vuole l'ultimo messaggio
+                    Chat
+
+            Output:
+                    content :   ultimo messaggio formattato in una stringa
+                    String      <username>: <testo>
          */
         List<Message> lastMessageList =  messageRepository.findLastMessageByChat(chat);
         Message lastMessage;

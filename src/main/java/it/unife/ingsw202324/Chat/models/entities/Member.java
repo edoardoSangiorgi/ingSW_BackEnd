@@ -35,6 +35,13 @@ public class Member {
     }
 
 
+    /*
+        sottoclasse che serve per creare la chiave primaria
+
+            -   username dell'utente
+            -   chat in cui l'utente è memebro
+                chat è anche chiave esterna
+     */
     @Data
     @Embeddable
     public static class MemberPK implements Serializable{
