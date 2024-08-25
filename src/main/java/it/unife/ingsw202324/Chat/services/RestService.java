@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
-public class TemplateRestConsumer {
+public class RestService {
 
     static String uriBaseMock = "http://localhost:3000/";
 

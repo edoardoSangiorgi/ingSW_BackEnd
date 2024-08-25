@@ -29,7 +29,7 @@ public class MainController {
     @Autowired
     private EventService eventService;
     @Autowired
-    private TemplateRestConsumer templateRestConsumer;
+    private RestService templateRestConsumer;
 
 
     //### MOCKOON API (REST) ####################################################################################

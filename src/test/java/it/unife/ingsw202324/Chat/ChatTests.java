@@ -8,7 +8,7 @@ import it.unife.ingsw202324.Chat.models.entities.User;
 import it.unife.ingsw202324.Chat.services.ChatService;
 import it.unife.ingsw202324.Chat.services.MemberService;
 import it.unife.ingsw202324.Chat.services.MessageService;
-import it.unife.ingsw202324.Chat.services.TemplateRestConsumer;
+import it.unife.ingsw202324.Chat.services.RestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +31,7 @@ class ChatTests {
 	@Autowired
 	MessageService messageService;
 	@Autowired
-	TemplateRestConsumer templateRestConsumer;
+	RestService templateRestConsumer;
 
 	@Test
 	void createChatTest() {
