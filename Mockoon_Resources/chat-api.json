@@ -1,0 +1,121 @@
+{
+    "uuid": "f47097a2-4755-434a-80a9-c39c2f324389",
+    "lastMigration": 32,
+    "name": "Chat API",
+    "endpointPrefix": "",
+    "latency": 0,
+    "port": 3000,
+    "hostname": "",
+    "folders": [],
+    "routes": [
+        {
+            "uuid": "10a428e7-e295-4234-8743-6ab656bf7622",
+            "type": "http",
+            "documentation": "restituisce 10 utenti",
+            "method": "get",
+            "endpoint": "available-users",
+            "responses": [
+                {
+                    "uuid": "16e03165-1d47-4b91-9f8f-edfb41995d2f",
+                    "body": "[\n  {\n    \"username\": \"user1\",\n    \"name\": \"Nicola\",\n    \"surname\": \"Rossi\",\n    \"birthDate\": \"1990-01-01\"\n  },\n  {\n    \"username\": \"user2\",\n    \"name\": \"Marghertia\",\n    \"surname\": \"Verdi\",\n    \"birthDate\": \"1990-01-01\"\n  },\n  {\n    \"username\": \"user3\",\n    \"name\": \"Anna\",\n    \"surname\": \"Bianchi\",\n    \"birthDate\": \"1990-01-01\"\n  },\n  {\n    \"username\": \"user4\",\n    \"name\": \"Matteo\",\n    \"surname\": \"Rossi\",\n    \"birthDate\": \"1990-01-01\"\n  },\n  {\n    \"username\": \"user5\",\n    \"name\": \"Alessandro\",\n    \"surname\": \"Bianchi\",\n    \"birthDate\": \"1990-01-01\"\n  },\n  {\n    \"username\": \"jd\",\n    \"name\": \"John\",\n    \"surname\": \"Doe\",\n    \"birthDate\": \"1990-01-01\"\n  },\n  {\n    \"username\": \"js\",\n    \"name\": \"Jane\",\n    \"surname\": \"Smith\",\n    \"birthDate\": \"1992-02-02\"\n  },\n  {\n    \"username\": \"bj\",\n    \"name\": \"Bob\",\n    \"surname\": \"Johnson\",\n    \"birthDate\": \"1985-03-03\"\n  },\n  {\n    \"username\": \"aw\",\n    \"name\": \"Alice\",\n    \"surname\": \"Williams\",\n    \"birthDate\": \"1995-04-04\"\n  },\n  {\n    \"username\": \"mb\",\n    \"name\": \"Mike\",\n    \"surname\": \"Brown\",\n    \"birthDate\": \"1980-05-05\"\n  },\n  {\n    \"username\": \"ed\",\n    \"name\": \"Emma\",\n    \"surname\": \"Davis\",\n    \"birthDate\": \"1998-06-06\"\n  },\n  {\n    \"username\": \"om\",\n    \"name\": \"Oliver\",\n    \"surname\": \"Miller\",\n    \"birthDate\": \"1991-07-07\"\n  },\n  {\n    \"username\": \"sw\",\n    \"name\": \"Sophia\",\n    \"surname\": \"Wilson\",\n    \"birthDate\": \"1994-08-08\"\n  },\n  {\n    \"username\": \"benm\",\n    \"name\": \"Ben\",\n    \"surname\": \"Moore\",\n    \"birthDate\": \"1982-09-09\"\n  },\n  {\n    \"username\": \"lt\",\n    \"name\": \"Lily\",\n    \"surname\": \"Taylor\",\n    \"birthDate\": \"1996-10-10\"\n  }\n]",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "",
+                    "headers": [],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null
+        },
+        {
+            "uuid": "8e198807-299b-4ad3-b22a-b5e1dff9cb4e",
+            "type": "http",
+            "documentation": "restituisce 10 eventi",
+            "method": "get",
+            "endpoint": "available-events",
+            "responses": [
+                {
+                    "uuid": "1af57220-f77f-42ef-a33a-74a173623e58",
+                    "body": "[\n  {\n    \"name\": \"Malua\",\n    \"description\": \"Outdoor music festival\",\n    \"type\": \"Music\",\n    \"minAge\": 18,\n    \"loc\": \"Lido di Spina\",\n    \"start\": \"2023-06-15T12:00:00.000Z\",\n    \"end\": \"2023-06-17T22:00:00.000Z\"\n  },\n  {\n    \"name\": \"Summer Fest\",\n    \"description\": \"Outdoor music festival\",\n    \"type\": \"Music\",\n    \"minAge\": 18,\n    \"loc\": \"Central Park\",\n    \"start\": \"2023-06-15T12:00:00.000Z\",\n    \"end\": \"2023-06-17T22:00:00.000Z\"\n  },\n  {\n    \"name\": \"Charity Run\",\n    \"description\": \"Annual charity run\",\n    \"type\": \"Sports\",\n    \"minAge\": 16,\n    \"loc\": \"Riverfront\",\n    \"start\": \"2023-04-10T08:00:00.000Z\",\n    \"end\": \"2023-04-10T12:00:00.000Z\"\n  },\n  {\n    \"name\": \"Food Truck Festival\",\n    \"description\": \"Variety of food trucks\",\n    \"type\": \"Food\",\n    \"minAge\": 0,\n    \"loc\": \"Downtown\",\n    \"start\": \"2023-05-20T11:00:00.000Z\",\n    \"end\": \"2023-05-20T20:00:00.000Z\"\n  },\n  {\n    \"name\": \"Comedy Night\",\n    \"description\": \"Stand-up comedy show\",\n    \"type\": \"Comedy\",\n    \"minAge\": 21,\n    \"loc\": \"Theater\",\n    \"start\": \"2023-03-25T20:00:00.000Z\",\n    \"end\": \"2023-03-25T22:30:00.000Z\"\n  },\n  {\n    \"name\": \"Art Exhibition\",\n    \"description\": \"Local artist showcase\",\n    \"type\": \"Art\",\n    \"minAge\": 0,\n    \"loc\": \"Museum\",\n    \"start\": \"2023-02-15T10:00:00.000Z\",\n    \"end\": \"2023-03-15T18:00:00.000Z\"\n  },\n  {\n    \"name\": \"Concert in the Park\",\n    \"description\": \"Free outdoor concert\",\n    \"type\": \"Music\",\n    \"minAge\": 0,\n    \"loc\": \"Park\",\n    \"start\": \"2023-07-04T18:00:00.000Z\",\n    \"end\": \"2023-07-04T21:00:00.000Z\"\n  },\n  {\n    \"name\": \"Wine Tasting\",\n    \"description\": \"Wine and cheese pairing\",\n    \"type\": \"Food\",\n    \"minAge\": 21,\n    \"loc\": \"Vineyard\",\n    \"start\": \"2023-06-01T18:00:00.000Z\",\n    \"end\": \"2023-06-01T20:00:00.000Z\"\n  },\n  {\n    \"name\": \"Yoga Festival\",\n    \"description\": \"Yoga classes and workshops\",\n    \"type\": \"Wellness\",\n    \"minAge\": 16,\n    \"loc\": \"Yoga Studio\",\n    \"start\": \"2023-03-18T09:00:00.000Z\",\n    \"end\": \"2023-03-19T17:00:00.000Z\"\n  },\n  {\n    \"name\": \"Book Fair\",\n    \"description\": \"Author readings and signings\",\n    \"type\": \"Literary\",\n    \"minAge\": 0,\n    \"loc\": \"Library\",\n    \"start\": \"2023-05-06T10:00:00.000Z\",\n    \"end\": \"2023-05-07T18:00:00.000Z\"\n  },\n  {\n    \"name\": \"Parade\",\n    \"description\": \"Annual holiday parade\",\n    \"type\": \"Community\",\n    \"minAge\": 0,\n    \"loc\": \"Main Street\",\n    \"start\": \"2023-12-24T14:00:00.000Z\",\n    \"end\": \"2023-12-24T16:00:00.000Z\"\n  }\n]",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "",
+                    "headers": [],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null
+        }
+    ],
+    "rootChildren": [
+        {
+            "type": "route",
+            "uuid": "10a428e7-e295-4234-8743-6ab656bf7622"
+        },
+        {
+            "type": "route",
+            "uuid": "8e198807-299b-4ad3-b22a-b5e1dff9cb4e"
+        }
+    ],
+    "proxyMode": false,
+    "proxyHost": "",
+    "proxyRemovePrefix": false,
+    "tlsOptions": {
+        "enabled": false,
+        "type": "CERT",
+        "pfxPath": "",
+        "certPath": "",
+        "keyPath": "",
+        "caPath": "",
+        "passphrase": ""
+    },
+    "cors": true,
+    "headers": [
+        {
+            "key": "Content-Type",
+            "value": "application/json"
+        }
+    ],
+    "proxyReqHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "proxyResHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "data": [
+        {
+            "uuid": "54936565-4aa1-4c97-90b8-cc2f4a25deaa",
+            "id": "aoym",
+            "name": "Users",
+            "documentation": "",
+            "value": "[\n  {{#repeat 50}}\n  {\n    \"id\": \"{{faker 'string.uuid'}}\",\n    \"username\": \"{{faker 'internet.userName'}}\"\n  }\n  {{/repeat}}\n]"
+        }
+    ],
+    "callbacks": []
+}
